@@ -46,3 +46,6 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(1000))
+
+    def __eq__(self, other):
+        return self.id == other.id
