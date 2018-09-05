@@ -1,5 +1,9 @@
+import logging
+
 import json
 from itertools import groupby
+
+logger = logging.getLogger("utils")
 
 
 def convert_json_to_object(passed_object, payload_data):
@@ -9,19 +13,8 @@ def convert_json_to_object(passed_object, payload_data):
             if hasattr(passed_object, key):
                 setattr(passed_object, key, value)
         return passed_object
-    except:     # TODO specify class
-        return None
-
-
-def edit_object_based_on_json(passed_object, payload_data, skip_list):
-    try:
-        payload = json.loads(payload_data)
-        for key, value in payload.items():
-            if key not in skip_list and value is not None:
-                if hasattr(passed_object, key):
-                    setattr(passed_object, key, value)
-        return passed_object
-    except:
+    except Exception as ex:
+        logger.error(ex, exc_info=True)
         return None
 
 

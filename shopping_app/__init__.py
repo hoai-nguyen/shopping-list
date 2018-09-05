@@ -16,4 +16,9 @@ Session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=en
 Base = declarative_base()
 
 
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    Session.remove()
+
+
 from shopping_app import views, models

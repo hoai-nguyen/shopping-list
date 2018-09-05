@@ -2,14 +2,14 @@ from flask import request, jsonify
 from shopping_app import app, request_handlers
 from flask_accept import accept
 
-from shopping_app.constants import MSG_REQUIRE_BODY
+from shopping_app.constants import RES_REQUIRE_BODY
 
 
 @app.route('/shopping_list', methods=['POST'])  # TODO docs string
 @accept('application/json')
 def add_shopping_list():
     if not request.json:
-        jsonify(MSG_REQUIRE_BODY), 400
+        jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.add_shopping_list(request.json)
 
@@ -18,7 +18,7 @@ def add_shopping_list():
 @accept('application/json')
 def add_item():
     if not request.json:
-        jsonify(MSG_REQUIRE_BODY), 400
+        jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.add_item(request.json)
 
@@ -27,12 +27,12 @@ def add_item():
 @accept('application/json')
 def update_shopping_list(shopping_list_id):
     if not request.json:
-        jsonify(MSG_REQUIRE_BODY), 400
+        jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.update_shopping_list(shopping_list_id, request.json)
 
 
-@app.route('/shopping_list/<shopping_list_id>', methods=['DELETE'])
+@app.route('/shopping_list/<int:shopping_list_id>', methods=['DELETE'])
 def delete_shopping_list(shopping_list_id):
 
     return request_handlers.delete_shopping_list(shopping_list_id)
@@ -42,7 +42,7 @@ def delete_shopping_list(shopping_list_id):
 @accept('application/json')
 def add_item_to_shopping_list():
     if not request.json:
-        jsonify(MSG_REQUIRE_BODY), 400
+        jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.add_item_to_shopping_list(request.json)
 
