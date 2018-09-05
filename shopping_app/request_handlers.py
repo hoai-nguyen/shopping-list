@@ -117,3 +117,84 @@ def add_item_to_shopping_list(payload):
         return jsonify({"message": "SUCCESS", "updated_shopping_list": updated_shopping_list}), 200
     except:
         return jsonify({"message": "FAILED"}), 500
+
+
+def get_all_shopping_lists():
+    try:
+        db_session = Session()
+        shopping_lists = db_session.query(ShoppingList).all()
+
+        dict_shopping_lists = []
+        for shopping_list in shopping_lists:
+            dict_shopping_lists.append(shopping_list.as_dict())
+        return jsonify(dict_shopping_lists)
+    except:
+        return jsonify({"message": "FAILED"}), 500
+
+
+def get_shopping_list_by_title(title):
+        try:
+            db_session = Session()
+            shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.title == title).all()
+
+            dict_shopping_lists = []
+            for shopping_list in shopping_lists:
+                dict_shopping_lists.append(shopping_list.as_dict())
+            return jsonify(dict_shopping_lists)
+        except:
+            return jsonify({"message": "FAILED"}), 500
+
+
+def get_shopping_list_by_keyword(keyword):
+    try:
+        db_session = Session()
+        shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.title.contains(keyword)).all()
+
+        dict_shopping_lists = []
+        for shopping_list in shopping_lists:
+            dict_shopping_lists.append(shopping_list.as_dict())
+        return jsonify(dict_shopping_lists)
+    except:
+        return jsonify({"message": "FAILED"}), 500
+
+
+def get_shopping_list_by_item_id(item_id):
+    try:
+        db_session = Session()
+        shopping_list_items = db_session.query(ShoppingListItem).filter(
+            ShoppingListItem.item_id == item_id
+        ).all()
+        shopping_list_ids = list(el.shopping_list_id for el in shopping_list_items)
+        shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.id.in_(shopping_list_ids)).all()
+
+        dict_shopping_lists = []
+        for shopping_list in shopping_lists:
+            dict_shopping_lists.append(shopping_list.as_dict())
+        return jsonify(dict_shopping_lists)
+    except:
+        return jsonify({"message": "FAILED"}), 500
+
+
+def get_shopping_list_by_item_name_keyword(keyword):
+    try:
+        db_session = Session()
+        items = db_session.query(Item).filter(Item.name.contains(keyword)).all()
+        if not items:
+            return jsonify({}), 200
+
+        item_ids = list(item.id for item in items)
+        shopping_list_items = db_session.query(ShoppingListItem).filter(ShoppingListItem.item_id.in_(item_ids)).all()
+
+        if shopping_list_items:
+            shopping_list_ids = list(el.shopping_list_id for el in shopping_list_items)
+            shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.id.in_(shopping_list_ids)).all()
+
+            if shopping_lists:
+                dict_shopping_lists = []
+                for shopping_list in shopping_lists:
+                    dict_shopping_lists.append(shopping_list.as_dict())
+                return jsonify(dict_shopping_lists), 200
+    except:
+        return jsonify({"message": "FAILED"}), 500
+
+    return jsonify({}), 200
