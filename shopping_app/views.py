@@ -1,8 +1,10 @@
 from flask import request, jsonify
 from shopping_app import app, request_handlers
+from flask_accept import accept
 
 
-@app.route('/shopping_list', methods=['POST']) # TODO docs string
+@app.route('/shopping_list', methods=['POST'])  # TODO docs string
+@accept('application/json')
 def add_shopping_list():
     if not request.json:
         jsonify({"message": "Require body."}), 400
@@ -11,6 +13,7 @@ def add_shopping_list():
 
 
 @app.route('/item', methods=['POST'])
+@accept('application/json')
 def add_item():
     if not request.json:
         jsonify({"message": "Require body."}), 400
@@ -19,6 +22,7 @@ def add_item():
 
 
 @app.route('/shopping_list/<int:shopping_list_id>', methods=['PUT'])
+@accept('application/json')
 def update_shopping_list(shopping_list_id):
     if not request.json:
         jsonify({"message": "Require body."}), 400
@@ -33,6 +37,7 @@ def delete_shopping_list(shopping_list_id):
 
 
 @app.route('/item_shopping_list', methods=['POST'])
+@accept('application/json')
 def add_item_to_shopping_list():
     if not request.json:
         jsonify({"message": "Require body."}), 400
