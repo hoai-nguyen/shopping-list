@@ -18,6 +18,9 @@ class ShoppingList(Base):
     # association proxy of "shopping_list_items" collection to "item" attribute
     items = association_proxy('shopping_list_items', 'item')
 
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class ShoppingListItem(Base):
     __tablename__ = 'shopping_list_item'
@@ -39,6 +42,9 @@ class ShoppingListItem(Base):
         self.shopping_list = shopping_list
         self.item = item
         self.quantity = quantity
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name != 'shopping_list_id'}
 
 
 class Item(Base):
