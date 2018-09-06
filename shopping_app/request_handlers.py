@@ -12,7 +12,8 @@ logger = logging.getLogger("handler")
 
 def add_shopping_list(payload):
     try:
-        new_shopping_list = convert_json_to_object(ShoppingList(), json.dumps(payload))
+        new_shopping_list = \
+            convert_json_to_object(ShoppingList(), json.dumps(payload))
         if new_shopping_list:
             db_session = Session()
             db_session.add(new_shopping_list)
@@ -46,7 +47,8 @@ def update_shopping_list(shopping_list_id, payload):
     try:
         db_session = Session()
         shopping_lists = db_session.query(ShoppingList)\
-            .filter(ShoppingList.id == shopping_list_id).with_for_update(nowait=False).all()
+            .filter(ShoppingList.id == shopping_list_id)\
+            .with_for_update(nowait=False).all()
 
         if not shopping_lists:
             return jsonify(RES_INVALID_SHOPPING_LIST_ID), 400
@@ -69,7 +71,8 @@ def update_shopping_list(shopping_list_id, payload):
 def delete_shopping_list(shopping_list_id):
     try:
         db_session = Session()
-        shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.id == shopping_list_id).all()
+        shopping_lists = db_session.query(ShoppingList)\
+            .filter(ShoppingList.id == shopping_list_id).all()
 
         if not shopping_lists:
             return jsonify(RES_INVALID_SHOPPING_LIST_ID), 400
@@ -94,7 +97,8 @@ def add_item_to_shopping_list(payload):
             return jsonify(RES_REQUIRE_SHOPPING_LIST_ITEM_ID), 400
 
         db_session = Session()
-        shopping_list = db_session.query(ShoppingList).filter(ShoppingList.id == shopping_list_id).first()
+        shopping_list = db_session.query(ShoppingList)\
+            .filter(ShoppingList.id == shopping_list_id).first()
 
         if not shopping_list:
             return jsonify(RES_INVALID_SHOPPING_LIST_ID), 400
@@ -120,7 +124,9 @@ def add_item_to_shopping_list(payload):
         # these items have never been added to the shopping list
         if len(dict_id_2_new_item) > 0:
             for item_id, item in dict_id_2_new_item.items():
-                ShoppingListItem(shopping_list=shopping_list, item=item, quantity=dict_item_id_2_count[item_id])
+                ShoppingListItem(shopping_list=shopping_list
+                                , item=item
+                                , quantity=dict_item_id_2_count[item_id])
 
         db_session.commit()
 
@@ -159,7 +165,8 @@ def get_all_shopping_lists():
 def get_shopping_list_by_title(title):
     try:
         db_session = Session()
-        shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.title == title).all()
+        shopping_lists = db_session.query(ShoppingList)\
+            .filter(ShoppingList.title == title).all()
 
         dict_shopping_lists = []
         for shopping_list in shopping_lists:
@@ -174,7 +181,8 @@ def get_shopping_list_by_title(title):
 def get_shopping_list_by_keyword(keyword):
     try:
         db_session = Session()
-        shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.title.contains(keyword)).all()
+        shopping_lists = db_session.query(ShoppingList)\
+            .filter(ShoppingList.title.contains(keyword)).all()
 
         dict_shopping_lists = []
         for shopping_list in shopping_lists:
@@ -192,8 +200,10 @@ def get_shopping_list_by_item_id(item_id):
         shopping_list_items = db_session.query(ShoppingListItem).filter(
             ShoppingListItem.item_id == item_id
         ).all()
-        shopping_list_ids = list(el.shopping_list_id for el in shopping_list_items)
-        shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.id.in_(shopping_list_ids)).all()
+        shopping_list_ids \
+            = list(el.shopping_list_id for el in shopping_list_items)
+        shopping_lists = db_session.query(ShoppingList)\
+            .filter(ShoppingList.id.in_(shopping_list_ids)).all()
 
         dict_shopping_lists = []
         for shopping_list in shopping_lists:
@@ -208,16 +218,20 @@ def get_shopping_list_by_item_id(item_id):
 def get_shopping_list_by_item_name_keyword(keyword):
     try:
         db_session = Session()
-        items = db_session.query(Item).filter(Item.name.contains(keyword)).all()
+        items = db_session.query(Item)\
+            .filter(Item.name.contains(keyword)).all()
         if not items:
             return jsonify({}), 200
 
         item_ids = list(item.id for item in items)
-        shopping_list_items = db_session.query(ShoppingListItem).filter(ShoppingListItem.item_id.in_(item_ids)).all()
+        shopping_list_items = db_session.query(ShoppingListItem)\
+            .filter(ShoppingListItem.item_id.in_(item_ids)).all()
 
         if shopping_list_items:
-            shopping_list_ids = list(el.shopping_list_id for el in shopping_list_items)
-            shopping_lists = db_session.query(ShoppingList).filter(ShoppingList.id.in_(shopping_list_ids)).all()
+            shopping_list_ids = \
+                list(el.shopping_list_id for el in shopping_list_items)
+            shopping_lists = db_session.query(ShoppingList)\
+                .filter(ShoppingList.id.in_(shopping_list_ids)).all()
 
             if shopping_lists:
                 dict_shopping_lists = []
