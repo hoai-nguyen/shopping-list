@@ -2,7 +2,7 @@ from shopping_app import app
 
 
 @app.route('/')
-def hello_world():
+def index():
     return 'A RESTful API to support CRUD operations to manage a shopping list.'
 
 
