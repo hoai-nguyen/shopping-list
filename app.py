@@ -1,4 +1,4 @@
-from shopping_app import app
+from shopping_app import app, create_app
 
 
 @app.route('/')
@@ -7,4 +7,5 @@ def index():
 
 
 if __name__ == '__main__':
+    app = create_app()
     app.run()
