@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import request, jsonify
 from shopping_app import app, request_handlers
 from flask_accept import accept

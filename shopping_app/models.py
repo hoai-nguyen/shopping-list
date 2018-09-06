@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
 
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
@@ -11,7 +13,7 @@ class ShoppingList(Base):
     __tablename__ = 'shopping_list'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String(1000))  # TODO config length
+    title = Column(String(1000))
     store_name = Column(String(1000))
     created_date = Column(DateTime, default=datetime.now())
 

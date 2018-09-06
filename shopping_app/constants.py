@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # response messages
 RES_REQUIRE_BODY = {"message": "Require body."}
 RES_FAILED = {"message": "FAILED"}
