@@ -13,3 +13,5 @@ set FLASK_APP=app.py
 In your terminal, install all of the required modules
 Windows/Linux/MacOS:
 pip install -r requirements.txt
+
+Running application: flask run
