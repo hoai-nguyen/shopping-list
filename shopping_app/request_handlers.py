@@ -11,6 +11,16 @@ logger = logging.getLogger("handler")
 
 
 def add_shopping_list(payload):
+    """Service to add new shopping list to DB.
+
+    Responses:
+      500: If any exception occurs and failed to add shopping list to DB.
+      400: If bad request is sent.
+      200: Add shopping list to DB successfully.
+
+    @:param payload: JSON information of new shopping list.
+    @:return API response
+    """
     try:
         new_shopping_list = \
             convert_json_to_object(ShoppingList(), json.dumps(payload))
@@ -28,6 +38,16 @@ def add_shopping_list(payload):
 
 
 def add_item(payload):
+    """Service to add new item to DB.
+
+    Responses:
+      500: If any exception occurs and failed to add item to DB.
+      400: If bad request is sent.
+      200: Add item to DB successfully.
+
+    @:param payload: JSON information of new item.
+    @:return API response
+    """
     try:
         new_item = convert_json_to_object(Item(), json.dumps(payload))
         if new_item:
@@ -44,6 +64,17 @@ def add_item(payload):
 
 
 def update_shopping_list(shopping_list_id, payload):
+    """Service to update shopping list.
+
+    Responses:
+      500: If any exception occurs and failed to update shopping list.
+      400: If bad request is sent.
+      200: Update shopping list successfully.
+
+    @:param shopping_list_id: ID of shopping list needed to be updated.
+    @:param payload: JSON information of 'store_name' and 'title' of shopping list.
+    @:return API response
+    """
     try:
         db_session = Session()
         shopping_lists = db_session.query(ShoppingList)\
@@ -57,8 +88,11 @@ def update_shopping_list(shopping_list_id, payload):
         new_store_name = payload.get(SL_STORE_NAME)
 
         for sl in shopping_lists:
-            sl.title = new_title
-            sl.store_name = new_store_name
+            if new_title is not None:
+                sl.title = new_title
+
+            if new_store_name is not None:
+                sl.store_name = new_store_name
 
         db_session.commit()
     except Exception as ex:
@@ -69,6 +103,16 @@ def update_shopping_list(shopping_list_id, payload):
 
 
 def delete_shopping_list(shopping_list_id):
+    """Service Delete shopping list.
+
+    Responses:
+      500: If any exception occurs and failed to delete shopping list.
+      400: If bad request is sent.
+      200: Delete shopping list successfully.
+
+    @:param shopping_list_id: ID of shopping list needed to be deleted.
+    @:return API response
+    """
     try:
         db_session = Session()
         shopping_lists = db_session.query(ShoppingList)\
@@ -89,6 +133,16 @@ def delete_shopping_list(shopping_list_id):
 
 
 def add_item_to_shopping_list(payload):
+    """Service to add items to shopping list.
+
+    Responses:
+      500: If any exception occurs and failed to add item to shopping list.
+      400: If bad request is sent.
+      200: Add item to shopping list successfully.
+
+    @:param payload: JSON information of 'shopping_list_id' and 'item_ids'
+    @:return Updated shopping list as JSON (if 200).
+    """
     try:
         shopping_list_id = payload.get(REQ_SHOPPING_LIST_ID)
         item_ids = payload.get(REQ_ITEM_IDS)
@@ -148,6 +202,30 @@ def add_item_to_shopping_list(payload):
 
 
 def get_all_shopping_lists():
+    """Service to get all shopping lists from DB.
+
+    Responses:
+      500: If any exception occurs and failed to get all shopping lists.
+      200: Get all shopping lists successfully.
+
+    Example of returned result:
+    [
+        {
+            "created_date": "Wed, 05 Sep 2018 16:25:23 GMT",
+            "id": 2,
+            "store_name": "FPT Education",
+            "title": "Rice"
+        },
+        {
+            "created_date": "Thu, 06 Sep 2018 01:23:53 GMT",
+            "id": 3,
+            "store_name": "FPT Software",
+            "title": "Fish"
+        }
+    ]
+
+    @:return All shopping lists as JSON.
+    """
     try:
         db_session = Session()
         shopping_lists = db_session.query(ShoppingList).all()
@@ -163,6 +241,31 @@ def get_all_shopping_lists():
 
 
 def get_shopping_list_by_title(title):
+    """Service to get all shopping lists from DB by title.
+
+    Responses:
+      500: If any exception occurs and failed to get shopping lists by title.
+      200: Get shopping lists successfully.
+
+    Example of returned result:
+    [
+        {
+            "created_date": "Wed, 05 Sep 2018 16:25:23 GMT",
+            "id": 2,
+            "store_name": "FPT Education",
+            "title": "Rice"
+        },
+        {
+            "created_date": "Thu, 06 Sep 2018 01:23:53 GMT",
+            "id": 3,
+            "store_name": "FPT Software",
+            "title": "Fish"
+        }
+    ]
+
+    @:param title: Title of shopping list.
+    @:return All matched shopping lists as JSON.
+    """
     try:
         db_session = Session()
         shopping_lists = db_session.query(ShoppingList)\
@@ -179,6 +282,34 @@ def get_shopping_list_by_title(title):
 
 
 def get_shopping_list_by_keyword(keyword):
+    """Service to get all shopping lists from DB by keyword.
+
+    Example: Search for 'FPT' and get the list of all shopping lists
+    with the word 'FPT' in the title such as 'FPT Software'.
+
+    Responses:
+      500: If any exception occurs and failed to get shopping lists by keyword.
+      200: Get shopping lists successfully.
+
+    Example of returned result:
+    [
+        {
+            "created_date": "Wed, 05 Sep 2018 16:25:23 GMT",
+            "id": 2,
+            "store_name": "FPT Education",
+            "title": "Rice"
+        },
+        {
+            "created_date": "Thu, 06 Sep 2018 01:23:53 GMT",
+            "id": 3,
+            "store_name": "FPT Software",
+            "title": "Fish"
+        }
+    ]
+
+    @:param title: Title to search for shopping lists.
+    @:return All matched shopping lists as JSON.
+    """
     try:
         db_session = Session()
         shopping_lists = db_session.query(ShoppingList)\
@@ -195,6 +326,31 @@ def get_shopping_list_by_keyword(keyword):
 
 
 def get_shopping_list_by_item_id(item_id):
+    """Service to get shopping lists from DB by item_id.
+
+    Responses:
+      500: If any exception occurs and failed to get shopping lists by item_id.
+      200: Get shopping lists successfully.
+
+    Example of returned result:
+    [
+        {
+            "created_date": "Wed, 05 Sep 2018 16:25:23 GMT",
+            "id": 2,
+            "store_name": "FPT Education",
+            "title": "Rice"
+        },
+        {
+            "created_date": "Thu, 06 Sep 2018 01:23:53 GMT",
+            "id": 3,
+            "store_name": "FPT Software",
+            "title": "Fish"
+        }
+    ]
+
+    @:param item_id: item_id to search for shopping lists.
+    @:return All matched shopping lists as JSON.
+    """
     try:
         db_session = Session()
         shopping_list_items = db_session.query(ShoppingListItem).filter(
@@ -216,6 +372,33 @@ def get_shopping_list_by_item_id(item_id):
 
 
 def get_shopping_list_by_item_name_keyword(keyword):
+    """Get all shopping lists from DB by keyword of item name.
+
+    Example: Search for “tomatoes” and get the list of all shopping lists with the word “tomatoes” in the item names.
+
+    Responses:
+      500: If any exception occurs and failed to get shopping lists by keyword of item name.
+      200: Get shopping lists successfully.
+
+    Example of returned result:
+    [
+        {
+            "created_date": "Wed, 05 Sep 2018 16:25:23 GMT",
+            "id": 2,
+            "store_name": "FPT Education",
+            "title": "Rice"
+        },
+        {
+            "created_date": "Thu, 06 Sep 2018 01:23:53 GMT",
+            "id": 3,
+            "store_name": "FPT Software",
+            "title": "Fish"
+        }
+    ]
+
+    @:param keyword: Keyword to search for shopping lists.
+    @:return All matched shopping lists as JSON.
+    """
     try:
         db_session = Session()
         items = db_session.query(Item)\
