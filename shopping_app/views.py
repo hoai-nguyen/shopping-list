@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
 from flask import request, jsonify
+
 from shopping_app import app, request_handlers
-from flask_accept import accept
-
-from shopping_app.constants import RES_REQUIRE_BODY
+from shopping_app.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
 
 
-@app.route('/shopping_list', methods=['POST'])  # TODO docs string
-@accept('application/json')
+@app.route('/shopping_list', methods=['POST'])
 def add_shopping_list():
     """API to add new shopping list to DB.
 
+    Method: POST
     Parameters: n/a
     Request header:
         required: Content-Type = application/json, Accept = application/json
@@ -27,17 +26,20 @@ def add_shopping_list():
 
     @:return API response
     """
-    if not request.json:
-        jsonify(RES_REQUIRE_BODY), 400
+    if not request.is_json:
+        return jsonify(RES_NOT_ACCEPTABLE), 400
+
+    if not request.data:
+        return jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.add_shopping_list(request.json)
 
 
 @app.route('/item', methods=['POST'])
-@accept('application/json')
 def add_item():
     """API to add new item to DB.
 
+    Method: POST
     Parameters: n/a
     Request header:
         required: Content-Type = application/json, Accept = application/json
@@ -50,17 +52,20 @@ def add_item():
 
     @:return API response
     """
-    if not request.json:
-        jsonify(RES_REQUIRE_BODY), 400
+    if not request.is_json:
+        return jsonify(RES_NOT_ACCEPTABLE), 400
+
+    if not request.data:
+        return jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.add_item(request.json)
 
 
 @app.route('/shopping_list/<int:shopping_list_id>', methods=['PUT'])
-@accept('application/json')
 def update_shopping_list(shopping_list_id):
     """Update shopping list. User can change the title or store name of the shopping list.
 
+    Method: PUT
     Request header:
         required: Content-Type = application/json, Accept = application/json
     Request body: Request body should contain item 'name', for example:
@@ -76,8 +81,11 @@ def update_shopping_list(shopping_list_id):
     @:param shopping_list_id: ID of shopping list needed to be updated.
     @:return API response
     """
-    if not request.json:
-        jsonify(RES_REQUIRE_BODY), 400
+    if not request.is_json:
+        return jsonify(RES_NOT_ACCEPTABLE), 400
+
+    if not request.data:
+        return jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.update_shopping_list(shopping_list_id, request.json)
 
@@ -86,6 +94,7 @@ def update_shopping_list(shopping_list_id):
 def delete_shopping_list(shopping_list_id):
     """Delete shopping list. User can delete shopping list by ID.
 
+    Method: DELETE
     Request header: n/a
     Request body: n/a
     Responses:
@@ -100,10 +109,10 @@ def delete_shopping_list(shopping_list_id):
 
 
 @app.route('/item_shopping_list', methods=['POST'])
-@accept('application/json')
 def add_item_to_shopping_list():
     """API to add items to shopping list DB.
 
+    Method: POST
     Parameters: n/a
     Request header:
         required: Content-Type = application/json, Accept = application/json
@@ -119,8 +128,11 @@ def add_item_to_shopping_list():
 
     @:return Updated shopping list as JSON.
     """
-    if not request.json:
-        jsonify(RES_REQUIRE_BODY), 400
+    if not request.is_json:
+        return jsonify(RES_NOT_ACCEPTABLE), 400
+
+    if not request.data:
+        return jsonify(RES_REQUIRE_BODY), 400
 
     return request_handlers.add_item_to_shopping_list(request.json)
 
@@ -129,6 +141,7 @@ def add_item_to_shopping_list():
 def get_all_shopping_lists():
     """Get all shopping lists from DB.
 
+    Method: GET
     Parameters: n/a
     Request header: n/a
     Request body: n/a
@@ -161,6 +174,7 @@ def get_all_shopping_lists():
 def get_shopping_list_by_title(title):
     """Get all shopping lists from DB by title.
 
+    Method: GET
     Request header: n/a
     Request body: n/a
     Responses:
@@ -196,6 +210,7 @@ def get_shopping_list_by_keyword(keyword):
     Example: Search for 'FPT' and get the list of all shopping lists
     with the word 'FPT' in the title such as 'FPT Software'.
 
+    Method: GET
     Request header: n/a
     Request body: n/a
     Responses:
@@ -228,6 +243,7 @@ def get_shopping_list_by_keyword(keyword):
 def get_shopping_list_by_item_id(item_id):
     """Get shopping lists from DB by item_id.
 
+    Method: GET
     Request header: n/a
     Request body: n/a
     Responses:
@@ -262,6 +278,7 @@ def get_shopping_list_by_item_name_keyword(keyword):
 
     Example: Search for “tomatoes” and get the list of all shopping lists with the word “tomatoes” in the item names.
 
+    Method: GET
     Request header: n/a
     Request body: n/a
     Responses:
