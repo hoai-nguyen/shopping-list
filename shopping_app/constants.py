@@ -2,6 +2,7 @@
 
 # response messages
 RES_REQUIRE_BODY = {"message": "Require body."}
+RES_NOT_ACCEPTABLE = {"message": "Support only content-type = application/json."}
 RES_FAILED = {"message": "FAILED"}
 RES_SUCCESS = {"message": "OK"}
 RES_REQUIRE_SHOPPING_LIST_ITEM_ID = {"message": "Shopping List ID and Item ID are required."}
