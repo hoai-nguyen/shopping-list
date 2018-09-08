@@ -15,3 +15,5 @@ Windows/Linux/MacOS:
 pip install -r requirements.txt
 
 Running application: flask run
+
+Running unit test: python -m unittest discover

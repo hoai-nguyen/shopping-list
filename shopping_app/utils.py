@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import logging
-
 import json
+import logging
 from itertools import groupby
 
 logger = logging.getLogger("utils")

@@ -32,7 +32,7 @@ def add_shopping_list(payload):
 
         db_session = Session()
         if new_shopping_list.id:
-            sl = db_session.query(ShoppingList)\
+            sl = db_session.query(ShoppingList) \
                 .filter(ShoppingList.id == new_shopping_list.id).all()
             if len(sl) > 0:
                 return jsonify(RES_DUPLICATED), 400
@@ -95,8 +95,8 @@ def update_shopping_list(shopping_list_id, payload):
     """
     try:
         db_session = Session()
-        shopping_lists = db_session.query(ShoppingList)\
-            .filter(ShoppingList.id == shopping_list_id)\
+        shopping_lists = db_session.query(ShoppingList) \
+            .filter(ShoppingList.id == shopping_list_id) \
             .with_for_update(nowait=False).all()
 
         if not shopping_lists:
@@ -136,7 +136,7 @@ def delete_shopping_list(shopping_list_id):
     """
     try:
         db_session = Session()
-        shopping_lists = db_session.query(ShoppingList)\
+        shopping_lists = db_session.query(ShoppingList) \
             .filter(ShoppingList.id == shopping_list_id).all()
 
         if not shopping_lists:
@@ -172,7 +172,7 @@ def add_item_to_shopping_list(payload):
             return jsonify(RES_REQUIRE_SHOPPING_LIST_ITEM_ID), 400
 
         db_session = Session()
-        shopping_list = db_session.query(ShoppingList)\
+        shopping_list = db_session.query(ShoppingList) \
             .filter(ShoppingList.id == shopping_list_id).first()
 
         if not shopping_list:
@@ -200,8 +200,8 @@ def add_item_to_shopping_list(payload):
         if len(dict_id_2_new_item) > 0:
             for item_id, item in dict_id_2_new_item.items():
                 ShoppingListItem(shopping_list=shopping_list
-                                , item=item
-                                , quantity=dict_item_id_2_count[item_id])
+                                 , item=item
+                                 , quantity=dict_item_id_2_count[item_id])
 
         db_session.commit()
 
@@ -289,7 +289,7 @@ def get_shopping_list_by_title(title):
     """
     try:
         db_session = Session()
-        shopping_lists = db_session.query(ShoppingList)\
+        shopping_lists = db_session.query(ShoppingList) \
             .filter(func.lower(ShoppingList.title) == title.lower()).all()
 
         dict_shopping_lists = []
@@ -333,7 +333,7 @@ def get_shopping_list_by_keyword(keyword):
     """
     try:
         db_session = Session()
-        shopping_lists = db_session.query(ShoppingList)\
+        shopping_lists = db_session.query(ShoppingList) \
             .filter(ShoppingList.title.contains(keyword)).all()
 
         dict_shopping_lists = []
@@ -379,7 +379,7 @@ def get_shopping_list_by_item_id(item_id):
         ).all()
         shopping_list_ids \
             = list(el.shopping_list_id for el in shopping_list_items)
-        shopping_lists = db_session.query(ShoppingList)\
+        shopping_lists = db_session.query(ShoppingList) \
             .filter(ShoppingList.id.in_(shopping_list_ids)).all()
 
         dict_shopping_lists = []
@@ -422,19 +422,19 @@ def get_shopping_list_by_item_name_keyword(keyword):
     """
     try:
         db_session = Session()
-        items = db_session.query(Item)\
+        items = db_session.query(Item) \
             .filter(Item.name.contains(keyword)).all()
         if not items:
             return jsonify({}), 200
 
         item_ids = list(item.id for item in items)
-        shopping_list_items = db_session.query(ShoppingListItem)\
+        shopping_list_items = db_session.query(ShoppingListItem) \
             .filter(ShoppingListItem.item_id.in_(item_ids)).all()
 
         if shopping_list_items:
             shopping_list_ids = \
                 list(el.shopping_list_id for el in shopping_list_items)
-            shopping_lists = db_session.query(ShoppingList)\
+            shopping_lists = db_session.query(ShoppingList) \
                 .filter(ShoppingList.id.in_(shopping_list_ids)).all()
 
             if shopping_lists:

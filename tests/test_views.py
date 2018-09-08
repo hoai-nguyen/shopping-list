@@ -1,4 +1,4 @@
-from shopping_app.constants import*
+from shopping_app.constants import *
 from tests.base import *
 
 

@@ -8,8 +8,7 @@ from sqlalchemy.schema import (
     DropTable,
     ForeignKeyConstraint,
     DropConstraint,
-    )
-
+)
 
 db_engine = None
 
@@ -21,9 +20,9 @@ def init_engine(uri, **kwargs):
 
 
 Session = scoped_session(lambda: create_session(bind=db_engine,
-                                                   autoflush=True,
-                                                   autocommit=False,
-                                                   expire_on_commit=True))
+                                                autoflush=True,
+                                                autocommit=False,
+                                                expire_on_commit=True))
 Base = declarative_base()
 Base.query = Session.query_property()
 
@@ -34,16 +33,11 @@ def init_db():
 
 
 def drop_db():
-    """It is a workaround for dropping all tables in sqlalchemy.
-    """
     if db_engine is None:
         raise Exception
     conn = db_engine.connect()
     trans = conn.begin()
     inspector = engine.reflection.Inspector.from_engine(db_engine)
-        # gather all data first before dropping anything.
-        # some DBs lock after things have been dropped in
-        # a transaction.
 
     metadata = MetaData()
 

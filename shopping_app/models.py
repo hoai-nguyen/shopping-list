@@ -34,7 +34,7 @@ class ShoppingListItem(Base):
     # bidirectional attribute/collection of "shopping_list"/"shopping_list_items"
     shopping_list = relationship(ShoppingList,
                                  backref=backref("shopping_list_items",
-                                 cascade="all, delete-orphan")
+                                                 cascade="all, delete-orphan")
                                  )
 
     # reference to the "Item" object
