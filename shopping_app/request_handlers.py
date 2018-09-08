@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import jsonify
+from sqlalchemy import func
 
 from shopping_app import Session
 from shopping_app.constants import *
@@ -24,12 +25,21 @@ def add_shopping_list(payload):
     try:
         new_shopping_list = \
             convert_json_to_object(ShoppingList(), json.dumps(payload))
-        if new_shopping_list:
-            db_session = Session()
-            db_session.add(new_shopping_list)
-            db_session.commit()
-        else:
-            return jsonify(RES_FAILED_TO_PARSE_JSON), 400
+
+        if not new_shopping_list or not new_shopping_list.title \
+                or not new_shopping_list.store_name:
+            return jsonify(RES_INVALID_BODY_SL), 400
+
+        db_session = Session()
+        if new_shopping_list.id:
+            sl = db_session.query(ShoppingList)\
+                .filter(ShoppingList.id == new_shopping_list.id).all()
+            if len(sl) > 0:
+                return jsonify(RES_DUPLICATED), 400
+
+        db_session.add(new_shopping_list)
+        db_session.commit()
+
     except Exception as ex:
         logger.error(ex, exc_info=True)
         return jsonify(RES_FAILED), 500
@@ -50,12 +60,20 @@ def add_item(payload):
     """
     try:
         new_item = convert_json_to_object(Item(), json.dumps(payload))
-        if new_item:
-            db_session = Session()
-            db_session.add(new_item)
-            db_session.commit()
-        else:
-            return jsonify(RES_FAILED_TO_PARSE_JSON), 400
+
+        if not new_item or not new_item.name:
+            return jsonify(RES_INVALID_BODY_IT), 400
+
+        db_session = Session()
+        if new_item.id:
+            sl = db_session.query(Item) \
+                .filter(Item.id == new_item.id).all()
+            if len(sl) > 0:
+                return jsonify(RES_DUPLICATED), 400
+
+        db_session.add(new_item)
+        db_session.commit()
+
     except Exception as ex:
         logger.error(ex, exc_info=True)
         return jsonify(RES_FAILED), 500
@@ -86,6 +104,9 @@ def update_shopping_list(shopping_list_id, payload):
 
         new_title = payload.get(SL_TITLE)
         new_store_name = payload.get(SL_STORE_NAME)
+
+        if not new_title and not new_store_name:
+            return jsonify(RES_UPDATE_WITH_ALL_EMPTY_VALUES), 400
 
         for sl in shopping_lists:
             if new_title is not None:
@@ -269,7 +290,7 @@ def get_shopping_list_by_title(title):
     try:
         db_session = Session()
         shopping_lists = db_session.query(ShoppingList)\
-            .filter(ShoppingList.title == title).all()
+            .filter(func.lower(ShoppingList.title) == title.lower()).all()
 
         dict_shopping_lists = []
         for shopping_list in shopping_lists:
