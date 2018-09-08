@@ -1,6 +1,3 @@
-import random
-import string
-
 from shopping_app.request_handlers import *
 from tests.base import *
 
@@ -47,8 +44,8 @@ class TestRequestHandlers(BaseTestCase):
             item = db_session.query(Item).filter(Item.id == -1).first()
             s4 = db_session.query(ShoppingList).filter(ShoppingList.id == -4).first()
             ShoppingListItem(shopping_list=s4
-                         , item=item
-                         , quantity=1)
+                             , item=item
+                             , quantity=1)
             db_session.commit()
 
     def tearDown(self):
@@ -90,24 +87,6 @@ class TestRequestHandlers(BaseTestCase):
         actual['status'] = res[1]
 
         self.assertEqual(expected, actual)
-
-    # @patch('shopping_app.database.Session', **{'commit.side_effect': Exception()})
-    # def test_add_shopping_list_500(self, MockSession):
-    #     payload = None
-    #
-    #     expected = RES_FAILED
-    #     expected['status'] = 500
-    #
-    #     mock_session = Mock(spec=MockSession)
-    #     attrs = {'commit.side_effect': Exception()}
-    #     mock_session.configure_mock(**attrs)
-    #     print(dir(mock_session))
-    #     res = add_shopping_list(payload)
-    #
-    #     actual = json.loads(res[0].get_data(as_text=True))
-    #     actual['status'] = res[1]
-    #
-    #     self.assertEqual(expected, actual)
 
     def test_add_item_200(self):
         payload = {"name": "name"}
@@ -226,19 +205,6 @@ class TestRequestHandlers(BaseTestCase):
         actual['status'] = res[1]
 
         self.assertEqual(expected, actual)
-
-    # def test_delete_shopping_list_500(self):
-    #     shopping_list_id = None
-    #
-    #     expected = RES_FAILED
-    #     expected['status'] = 500
-    #
-    #     res = delete_shopping_list(shopping_list_id)
-    #
-    #     actual = json.loads(res[0].get_data(as_text=True))
-    #     actual['status'] = res[1]
-    #
-    #     self.assertEqual(expected, actual)
 
     def test_add_item_to_shopping_list_200(self):
         payload = {"shopping_list_id": -2, "item_ids": [-1, -1, -2]}
