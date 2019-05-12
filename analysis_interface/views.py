@@ -2,8 +2,8 @@
 
 from flask import request, jsonify
 
-from shopping_app import app, request_handlers
-from shopping_app.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
+from analysis_interface import app, request_handlers
+from analysis_interface.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
 
 
 @app.route('/shopping_list', methods=['POST'])

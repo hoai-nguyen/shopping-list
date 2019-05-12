@@ -1,4 +1,4 @@
-from shopping_app.request_handlers import *
+from analysis_interface.request_handlers import *
 from tests.base import *
 
 
@@ -9,15 +9,15 @@ class TestRequestHandlers(BaseTestCase):
         sl_1 = db_session.query(ShoppingList).filter(ShoppingList.id == -1).all()
         sl_2 = db_session.query(ShoppingList).filter(ShoppingList.id == -2).all()
         sl_4 = db_session.query(ShoppingList).filter(ShoppingList.id == -4).first()
-        it_1 = db_session.query(Item).filter(Item.id == -1).all()
-        it_2 = db_session.query(Item).filter(Item.id == -2).all()
-        it_sl_22 = db_session.query(ShoppingListItem).filter(
-            ShoppingListItem.shopping_list_id == -2
-            , ShoppingListItem.item_id == -2
+        it_1 = db_session.query(KeyWord).filter(KeyWord.id == -1).all()
+        it_2 = db_session.query(KeyWord).filter(KeyWord.id == -2).all()
+        it_sl_22 = db_session.query(ShoppingListKeyWord).filter(
+            ShoppingListKeyWord.shopping_list_id == -2
+            , ShoppingListKeyWord.KeyWord_id == -2
         ).all()
-        it_sl_41 = db_session.query(ShoppingListItem).filter(
-            ShoppingListItem.shopping_list_id == -4
-            , ShoppingListItem.item_id == -1
+        it_sl_41 = db_session.query(ShoppingListKeyWord).filter(
+            ShoppingListKeyWord.shopping_list_id == -4
+            , ShoppingListKeyWord.KeyWord_id == -1
         ).first()
 
         payload_sl_1 = {"id": -1, "title": "test_title", "store_name": "test_store"}
@@ -33,18 +33,18 @@ class TestRequestHandlers(BaseTestCase):
         if not sl_4:
             add_shopping_list(payload_sl_4)
         if not it_1:
-            add_item(payload_it_1)
+            add_KeyWord(payload_it_1)
         if not it_2:
-            add_item(payload_it_2)
+            add_KeyWord(payload_it_2)
         if it_sl_22:
             for el in it_sl_22:
                 db_session.delete(el)
             db_session.commit()
         if not it_sl_41:
-            item = db_session.query(Item).filter(Item.id == -1).first()
+            KeyWord = db_session.query(KeyWord).filter(KeyWord.id == -1).first()
             s4 = db_session.query(ShoppingList).filter(ShoppingList.id == -4).first()
-            ShoppingListItem(shopping_list=s4
-                             , item=item
+            ShoppingListKeyWord(shopping_list=s4
+                             , KeyWord=KeyWord
                              , quantity=1)
             db_session.commit()
 
@@ -88,37 +88,37 @@ class TestRequestHandlers(BaseTestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_add_item_200(self):
+    def test_add_KeyWord_200(self):
         payload = {"name": "name"}
 
         expected = {'message': 'OK', 'status': 200}
-        res = add_item(payload)
+        res = add_KeyWord(payload)
 
         actual = json.loads(res[0].get_data(as_text=True))
         actual['status'] = res[1]
 
         self.assertEqual(expected, actual)
 
-    def test_add_item_400_invalid_body(self):
+    def test_add_KeyWord_400_invalid_body(self):
         payload = None
 
         expected = RES_INVALID_BODY_IT
         expected['status'] = 400
 
-        res = add_item(payload)
+        res = add_KeyWord(payload)
 
         actual = json.loads(res[0].get_data(as_text=True))
         actual['status'] = res[1]
 
         self.assertEqual(expected, actual)
 
-    def test_add_item_400_dup(self):
+    def test_add_KeyWord_400_dup(self):
         payload = {"id": -1, "name": "test_name"}
 
         expected = RES_DUPLICATED
         expected['status'] = 400
 
-        res = add_item(payload)
+        res = add_KeyWord(payload)
 
         actual = json.loads(res[0].get_data(as_text=True))
         actual['status'] = res[1]
@@ -206,54 +206,54 @@ class TestRequestHandlers(BaseTestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_add_item_to_shopping_list_200(self):
-        payload = {"shopping_list_id": -2, "item_ids": [-1, -1, -2]}
+    def test_add_KeyWord_to_shopping_list_200(self):
+        payload = {"shopping_list_id": -2, "KeyWord_ids": [-1, -1, -2]}
         expected = 200
 
-        res = add_item_to_shopping_list(payload)
+        res = add_KeyWord_to_shopping_list(payload)
 
         actual = res[1]
         self.assertEqual(expected, actual)
 
-    def test_add_item_to_shopping_list_400_missing_id(self):
-        payload = {"shopping_list_id": -2, "item_ids": []}
-        expected = RES_REQUIRE_SHOPPING_LIST_ITEM_ID
+    def test_add_KeyWord_to_shopping_list_400_missing_id(self):
+        payload = {"shopping_list_id": -2, "KeyWord_ids": []}
+        expected = RES_REQUIRE_SHOPPING_LIST_KeyWord_ID
         expected['status'] = 400
 
-        res = add_item_to_shopping_list(payload)
+        res = add_KeyWord_to_shopping_list(payload)
 
         actual = json.loads(res[0].get_data(as_text=True))
         actual["status"] = res[1]
         self.assertEqual(expected, actual)
 
-    def test_add_item_to_shopping_list_400_invalid_sl(self):
-        payload = {"shopping_list_id": -20, "item_ids": [-1]}
+    def test_add_KeyWord_to_shopping_list_400_invalid_sl(self):
+        payload = {"shopping_list_id": -20, "KeyWord_ids": [-1]}
         expected = RES_INVALID_SHOPPING_LIST_ID
         expected['status'] = 400
 
-        res = add_item_to_shopping_list(payload)
+        res = add_KeyWord_to_shopping_list(payload)
 
         actual = json.loads(res[0].get_data(as_text=True))
         actual["status"] = res[1]
         self.assertEqual(expected, actual)
 
-    def test_add_item_to_shopping_list_400_invalid_it(self):
-        payload = {"shopping_list_id": -2, "item_ids": [-20]}
-        expected = RES_INVALID_ITEM_ID
+    def test_add_KeyWord_to_shopping_list_400_invalid_it(self):
+        payload = {"shopping_list_id": -2, "KeyWord_ids": [-20]}
+        expected = RES_INVALID_KeyWord_ID
         expected['status'] = 400
 
-        res = add_item_to_shopping_list(payload)
+        res = add_KeyWord_to_shopping_list(payload)
 
         actual = json.loads(res[0].get_data(as_text=True))
         actual["status"] = res[1]
         self.assertEqual(expected, actual)
 
-    def test_add_item_to_shopping_list_500(self):
+    def test_add_KeyWord_to_shopping_list_500(self):
         payload = None
         expected = RES_FAILED
         expected['status'] = 500
 
-        res = add_item_to_shopping_list(payload)
+        res = add_KeyWord_to_shopping_list(payload)
 
         actual = json.loads(res[0].get_data(as_text=True))
         actual["status"] = res[1]
@@ -282,22 +282,22 @@ class TestRequestHandlers(BaseTestCase):
         res = get_shopping_list_by_keyword(title)
         self.assertEqual(expected, res.status_code)
 
-    def test_get_shopping_list_by_item_id_200(self):
-        item_id = -1
+    def test_get_shopping_list_by_KeyWord_id_200(self):
+        KeyWord_id = -1
         expected = 200
-        res = get_shopping_list_by_item_id(item_id)
+        res = get_shopping_list_by_KeyWord_id(KeyWord_id)
         self.assertEqual(expected, res.status_code)
 
-    def test_get_shopping_list_by_item_name_keyword_200(self):
+    def test_get_shopping_list_by_KeyWord_name_keyword_200(self):
         keyword = "name_1"
         expected = 200
-        res = get_shopping_list_by_item_name_keyword(keyword)
+        res = get_shopping_list_by_KeyWord_name_keyword(keyword)
         self.assertEqual(expected, res[1])
 
-    def test_get_shopping_list_by_item_name_keyword_500(self):
+    def test_get_shopping_list_by_KeyWord_name_keyword_500(self):
         keyword = None
         expected = 500
-        res = get_shopping_list_by_item_name_keyword(keyword)
+        res = get_shopping_list_by_KeyWord_name_keyword(keyword)
         self.assertEqual(expected, res[1])
 
 

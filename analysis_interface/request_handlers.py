@@ -3,10 +3,10 @@
 from flask import jsonify
 from sqlalchemy import func
 
-from shopping_app import Session
-from shopping_app.constants import *
-from shopping_app.models import *
-from shopping_app.utils import *
+from analysis_interface import Session
+from analysis_interface.constants import *
+from analysis_interface.models import *
+from analysis_interface.utils import *
 
 logger = logging.getLogger("handler")
 
@@ -59,15 +59,15 @@ def add_item(payload):
     @:return API response
     """
     try:
-        new_item = convert_json_to_object(Item(), json.dumps(payload))
+        new_item = convert_json_to_object(KeyWord(), json.dumps(payload))
 
         if not new_item or not new_item.name:
             return jsonify(RES_INVALID_BODY_IT), 400
 
         db_session = Session()
         if new_item.id:
-            sl = db_session.query(Item) \
-                .filter(Item.id == new_item.id).all()
+            sl = db_session.query(KeyWord) \
+                .filter(KeyWord.id == new_item.id).all()
             if len(sl) > 0:
                 return jsonify(RES_DUPLICATED), 400
 
@@ -179,15 +179,15 @@ def add_item_to_shopping_list(payload):
             return jsonify(RES_INVALID_SHOPPING_LIST_ID), 400
 
         dict_item_id_2_count = group_by_a_list(item_ids)
-        new_items = db_session.query(Item).filter(Item.id.in_(item_ids)).all()
+        new_items = db_session.query(KeyWord).filter(KeyWord.id.in_(item_ids)).all()
 
         if not new_items or len(dict_item_id_2_count) > len(new_items):
             return jsonify(RES_INVALID_ITEM_ID), 400
 
         dict_id_2_new_item = dict([(x.id, x) for x in new_items])
 
-        current_items = db_session.query(ShoppingListItem).filter(
-            ShoppingListItem.shopping_list_id == shopping_list.id
+        current_items = db_session.query(ShoppingListKeyWord).filter(
+            ShoppingListKeyWord.shopping_list_id == shopping_list.id
         ).all()
 
         for current_item in current_items:
@@ -199,7 +199,7 @@ def add_item_to_shopping_list(payload):
         # these items have never been added to the shopping list
         if len(dict_id_2_new_item) > 0:
             for item_id, item in dict_id_2_new_item.items():
-                ShoppingListItem(shopping_list=shopping_list
+                ShoppingListKeyWord(shopping_list=shopping_list
                                  , item=item
                                  , quantity=dict_item_id_2_count[item_id])
 
@@ -207,8 +207,8 @@ def add_item_to_shopping_list(payload):
 
         # get updated Shopping List object as JSON string
         updated_shopping_list = shopping_list.as_dict()
-        shopping_list_items = db_session.query(ShoppingListItem).filter(
-            ShoppingListItem.shopping_list_id == shopping_list.id
+        shopping_list_items = db_session.query(ShoppingListKeyWord).filter(
+            ShoppingListKeyWord.shopping_list_id == shopping_list.id
         ).all()
 
         updated_items = []
@@ -374,8 +374,8 @@ def get_shopping_list_by_item_id(item_id):
     """
     try:
         db_session = Session()
-        shopping_list_items = db_session.query(ShoppingListItem).filter(
-            ShoppingListItem.item_id == item_id
+        shopping_list_items = db_session.query(ShoppingListKeyWord).filter(
+            ShoppingListKeyWord.item_id == item_id
         ).all()
         shopping_list_ids \
             = list(el.shopping_list_id for el in shopping_list_items)
@@ -422,14 +422,14 @@ def get_shopping_list_by_item_name_keyword(keyword):
     """
     try:
         db_session = Session()
-        items = db_session.query(Item) \
-            .filter(Item.name.contains(keyword)).all()
+        items = db_session.query(KeyWord) \
+            .filter(KeyWord.name.contains(keyword)).all()
         if not items:
             return jsonify({}), 200
 
         item_ids = list(item.id for item in items)
-        shopping_list_items = db_session.query(ShoppingListItem) \
-            .filter(ShoppingListItem.item_id.in_(item_ids)).all()
+        shopping_list_items = db_session.query(ShoppingListKeyWord) \
+            .filter(ShoppingListKeyWord.item_id.in_(item_ids)).all()
 
         if shopping_list_items:
             shopping_list_ids = \

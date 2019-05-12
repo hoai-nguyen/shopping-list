@@ -1,9 +1,9 @@
-from shopping_app import app
-
+from analysis_interface import app, logger
 
 @app.route('/')
 def index():
-    return 'A RESTful API to support CRUD operations to manage a shopping list.'
+    logger.info("HOME")
+    return 'Analysis Interface.'
 
 
 if __name__ == '__main__':

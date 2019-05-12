@@ -28,7 +28,7 @@ Base.query = Session.query_property()
 
 
 def init_db():
-    import shopping_app.models
+    import analysis_interface.models
     Base.metadata.create_all(db_engine)
 
 

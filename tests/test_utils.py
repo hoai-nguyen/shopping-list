@@ -1,7 +1,7 @@
 import unittest
 
-from shopping_app.models import *
-from shopping_app.utils import *
+from analysis_interface.models import *
+from analysis_interface.utils import *
 
 
 class TestUtils(unittest.TestCase):
@@ -10,27 +10,27 @@ class TestUtils(unittest.TestCase):
         pass
 
     def test_convert_json_to_object(self):
-        passed_object = Item()
+        passed_object = KeyWord()
         payload = '{"name": "test_name"}'
 
-        expected = Item()
+        expected = KeyWord()
         expected.name = "test_name"
 
         actual = convert_json_to_object(passed_object, payload)
         self.assertEqual(expected.name, actual.name)
 
     def test_convert_json_to_object_none(self):
-        passed_object = Item()
+        passed_object = KeyWord()
         payload = None
 
         actual = convert_json_to_object(passed_object, payload)
         self.assertEqual(actual, None)
 
     def test_group_by_a_list(self):
-        item_ids = [1, 3, 2, 3, 3]
+        KeyWord_ids = [1, 3, 2, 3, 3]
         expected = {1: 1, 2: 1, 3: 3}
 
-        actual = group_by_a_list(item_ids)
+        actual = group_by_a_list(KeyWord_ids)
 
         self.assertEqual(expected, actual)
 

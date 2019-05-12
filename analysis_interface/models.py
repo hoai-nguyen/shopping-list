@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship, backref
 
-from shopping_app import Base
+from analysis_interface import Base
 
 
 class ShoppingList(Base):
@@ -24,7 +24,7 @@ class ShoppingList(Base):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
-class ShoppingListItem(Base):
+class ShoppingListKeyWord(Base):
     __tablename__ = 'shopping_list_item'
 
     shopping_list_id = Column(Integer, ForeignKey('shopping_list.id'), primary_key=True)
@@ -37,8 +37,8 @@ class ShoppingListItem(Base):
                                                  cascade="all, delete-orphan")
                                  )
 
-    # reference to the "Item" object
-    item = relationship("Item")
+    # reference to the "KeyWord" object
+    item = relationship("KeyWord")
 
     def __init__(self, shopping_list=None, item=None, quantity=None):
         self.shopping_list = shopping_list
@@ -49,7 +49,7 @@ class ShoppingListItem(Base):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name != 'shopping_list_id'}
 
 
-class Item(Base):
+class KeyWord(Base):
     __tablename__ = 'item'
 
     id = Column(Integer, primary_key=True)

@@ -2,7 +2,7 @@ import unittest
 
 from flask_testing import TestCase
 
-from shopping_app import app, db, create_app
+from analysis_interface import app, db, create_app
 
 
 class BaseTestCase(TestCase):
