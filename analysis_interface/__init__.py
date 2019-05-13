@@ -6,8 +6,8 @@ from flask import Flask, request
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from config import Config, TestConfig
-from analysis_interface.database import *
 from analysis_interface.utils_logging import logger, log_info
+from analysis_interface.database import init_engine
 
 def create_app(conf='any'):
     app = Flask(__name__)
@@ -24,12 +24,12 @@ app = create_app()
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+
 @app.before_request
 def action_before_request():
     try:
         log_info("BEFORE REQUEST MESSAGE", request)
         logger.info("ANOTHER BEFORE REQUEST MESSAGE")
-        1/0
     except Exception as ex:
         logger.error(ex, exc_info=True)
 
@@ -45,9 +45,4 @@ def action_after_request(response):
     return response
 
 
-@app.teardown_appcontext
-def shutdown_session(exception=None):
-    Session.remove()
-
-
-from analysis_interface import views, models
+from analysis_interface import views
