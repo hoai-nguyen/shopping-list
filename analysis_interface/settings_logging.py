@@ -3,7 +3,8 @@ import logging
 
 LOG_DIR="logs"
 
-CUSTOM_FORMAT='%(test_att)s - %(asctime)s - %(levelname)s - %(clientip)s - %(message)s - %(agent)s - %(url)s'
+# TimedRotatingFileHandler parameters
+CUSTOM_FORMAT='%(asctime)s - %(levelname)s - %(clientip)s - %(message)s - %(agent)s - %(url)s'
 CUSTOM_LEVEL=logging.INFO
 CUSTOM_FILENAME='access.log'
 CUSTOM_WHEN='s'
@@ -53,13 +54,13 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
-        'django': {
+        'flask': {
             'handlers': ['console', 'to_file'],
             'level': 'ERROR',
         }
     },
     "root": {
         "level": "INFO",
-        "handlers": []
+        "handlers": ['console']
     }
 }
