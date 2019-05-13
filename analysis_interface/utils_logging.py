@@ -2,7 +2,7 @@ import os
 import logging
 import logging.config
 import zipfile
-from analysis_interface.settings_logging import *
+from analysis_interface.settings import *
 from logging.handlers import TimedRotatingFileHandler
 
 # ----------------------------------------------------------------------
@@ -24,12 +24,12 @@ def rotator(source, dest):
     os.remove(source)
 
 
-def create_root_logger():
+def create_logger(logger_name="root"):
     # get logger
-    logger = logging.getLogger("root")
+    logger = logging.getLogger(logger_name)
     logger.setLevel(CUSTOM_LEVEL)
 
-    # # create a file handler
+    # create a file handler
     os.makedirs(LOG_DIR, exist_ok=True)
     handler = TimedRotatingFileHandler(\
         filename=os.path.join(LOG_DIR, CUSTOM_FILENAME), \
@@ -38,13 +38,13 @@ def create_root_logger():
         backupCount=int(CUSTOM_BACKUPCOUNT))
     handler.setLevel(CUSTOM_LEVEL)
 
-    # # create a logging format
+    # create a logging format
     formatter = logging.Formatter(CUSTOM_FORMAT)
     handler.setFormatter(formatter)
     handler.rotator = rotator
     handler.namer = namer
 
-    # # add the handlers to the logger
+    # add the handlers to the logger
     logger.addHandler(handler)
 
     clientip="default client"
@@ -73,5 +73,5 @@ def log_info(msg, request):
         logger.error(ex, exc_info=True)
     
 setup_logging_from_dict(LOGGING)
-logger = create_root_logger()
+logger = create_logger()
 

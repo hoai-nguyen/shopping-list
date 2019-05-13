@@ -20,25 +20,15 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'custom': {
-            'format': 'CUSTOM: %(asctime)s %(levelname)s %(name)s (%(lineno)d) %(message)s',
-            'datefmt': '%Y/%m/%d %H:%M:%S',
-        },
-        'simple': {
-            'format': '%(levelname)s|%(asctime)s|%(message)s',
+        'simple_format': {
+            'format': '%(asctime)s %(levelname)s %(name)s (%(lineno)d) %(message)s',
             'datefmt': '%Y/%m/%d %H:%M:%S',
         }
     },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'custom',
-        },
-        'to_file': {
-            'formatter': 'custom',
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join('logs', 'history.log'),
+            'formatter': 'simple_format',
         },
         'to_compressed_file': {
             'level': 'INFO',
@@ -53,10 +43,6 @@ LOGGING = {
         'sample_logger': {
             'handlers': ['console'],
             'level': 'DEBUG',
-        },
-        'flask': {
-            'handlers': ['console', 'to_file'],
-            'level': 'ERROR',
         }
     },
     "root": {
