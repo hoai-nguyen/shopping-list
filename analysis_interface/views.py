@@ -1,9 +1,27 @@
 # -*- coding: utf-8 -*-
 
-from flask import request, jsonify
-
+from flask import request, jsonify, render_template
+import os
 from analysis_interface import app, request_handlers
 from analysis_interface.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
+
+
+# two decorators, same function
+@app.route('/')
+@app.route('/index.html')
+def index1():
+    print(os.listdir())
+    return render_template('index.html', the_title='Tiger Home Page')
+
+
+@app.route('/symbol.html')
+def symbol():
+    return render_template('symbol.html', the_title='Tiger As Symbol')
+
+
+@app.route('/myth.html')
+def myth():
+    return render_template('myth.html', the_title='Tiger in Myth and Legend')
 
 
 @app.route('/shopping_list', methods=['POST'])
