@@ -2,8 +2,8 @@
 
 from flask import request, jsonify
 
-from shopping_app import app, request_handlers
-from shopping_app.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
+from apps import app, request_handlers, oidc
+from apps.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
 
 
 @app.route('/logs', methods=['GET'])

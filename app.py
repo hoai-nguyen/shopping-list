@@ -1,4 +1,4 @@
-from shopping_app import app
+from apps import app
 
 
 @app.route('/')

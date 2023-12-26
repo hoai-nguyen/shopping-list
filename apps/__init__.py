@@ -11,7 +11,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from config import Config, TestConfig
-from shopping_app.database import *
+from apps.database import *
 
 load_dotenv('.env')
 
@@ -42,7 +42,7 @@ def create_app(conf='any'):
     return app
 
 
-from shopping_app import models
+from apps import models
 
 app = create_app()
 db = SQLAlchemy(app)
@@ -141,4 +141,4 @@ def logout():
     return redirect(url_for(".landing_page"))
 
 
-from shopping_app import routes, models
+from apps import routes, models

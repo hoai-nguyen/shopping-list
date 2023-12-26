@@ -3,10 +3,10 @@
 from flask import jsonify
 from sqlalchemy import func
 
-from shopping_app import Session
-from shopping_app.constants import *
-from shopping_app.models import *
-from shopping_app.utils import *
+from apps import Session
+from apps.constants import *
+from apps.models import *
+from apps.utils import *
 
 logger = logging.getLogger("handler")
 
