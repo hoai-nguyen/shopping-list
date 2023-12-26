@@ -2,7 +2,8 @@
 
 from flask import request, jsonify
 
-from apps import app, request_handlers, oidc
+from apps import app, oidc
+from apps.api import request_handlers
 from apps.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
 
 

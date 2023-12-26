@@ -141,4 +141,6 @@ def logout():
     return redirect(url_for(".landing_page"))
 
 
-from apps import routes, models
+from apps import models
+from apps.api import routes
+
