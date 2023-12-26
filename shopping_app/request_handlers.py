@@ -261,6 +261,22 @@ def get_all_shopping_lists():
         return jsonify(RES_FAILED), 500
 
 
+def get_logs():
+    try:
+        db_session = Session()
+        result = db_session.execute("SELECT * FROM user_logs")
+        logs = [dict(row) for row in result]
+        print(logs)
+        # dict_shopping_lists = []
+        # for log in logs:
+        #     dict_shopping_lists.append(log)
+
+        return jsonify(logs)
+    except Exception as ex:
+        logger.error(ex, exc_info=True)
+        return jsonify(RES_FAILED), 500
+
+
 def get_shopping_list_by_title(title):
     """Service to get all shopping lists from DB by title.
 

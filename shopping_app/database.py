@@ -15,6 +15,7 @@ db_engine = None
 
 def init_engine(uri, **kwargs):
     global db_engine
+    print("uri:", uri)
     db_engine = create_engine(uri, **kwargs)
     return db_engine
 

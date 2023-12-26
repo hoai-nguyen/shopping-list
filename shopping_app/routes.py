@@ -6,6 +6,13 @@ from shopping_app import app, request_handlers
 from shopping_app.constants import RES_REQUIRE_BODY, RES_NOT_ACCEPTABLE
 
 
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    """
+    """
+    return request_handlers.get_logs()
+
+
 @app.route('/shopping_list', methods=['POST'])
 def add_shopping_list():
     """API to add new shopping list to DB.
