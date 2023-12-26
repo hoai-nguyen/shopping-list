@@ -1,4 +1,4 @@
-from shopping_app.request_handlers import *
+from apps.api.request_handlers import *
 from tests.base import *
 
 

@@ -9,6 +9,11 @@ load_dotenv(os.path.join(basedir, '.env'))
 
 
 class Config:
+    basedir = os.path.abspath(os.path.dirname(__file__))
+
+    # Assets Management
+    ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
+
     print(os.environ.get('DATABASE_URL'))
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
@@ -16,6 +21,11 @@ class Config:
 
 
 class TestConfig:
+    basedir = os.path.abspath(os.path.dirname(__file__))
+
+    # Assets Management
+    ASSETS_ROOT = os.getenv('ASSETS_ROOT', '/static/assets')
+
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') \

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Response, redirect, g, url_for
+from flask import Response, redirect, g, url_for, render_template
 from apps import app, oidc
 
 
@@ -51,24 +51,35 @@ def protected():
 
 
 @app.route("/")
+@oidc.require_login
 def landing_page():
-    html = """
-    <div>
-       <input type="button" onclick="location.href='http://localhost:5000/login';" value="SSO Login" />
-    </div>
-    Welcome!
-
-    """
-    return Response(html)
+    return redirect(url_for('login'))
 
 
 @app.route("/login")
 @oidc.require_login
 def login():
-    return redirect(url_for(".protected"))
+    return redirect(url_for(".index"))
+
+
+@app.route('/index')
+def index():
+    return render_template('home/index.html', segment='index')
 
 
 @app.route("/logout")
 def logout():
     oidc.logout()
     return redirect(url_for(".landing_page"))
+
+
+@app.route("/profile")
+@oidc.require_login
+def profile():
+    user = g.user
+    return render_template('home/profile.html', **{
+        "current_user": {
+            "email": user.profile.email,
+            "username": user.profile.email,
+        }
+    })

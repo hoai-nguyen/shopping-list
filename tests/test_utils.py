@@ -1,7 +1,7 @@
 import unittest
 
-from shopping_app.models import *
-from shopping_app.utils import *
+from apps.models import *
+from apps.utils import *
 
 
 class TestUtils(unittest.TestCase):
